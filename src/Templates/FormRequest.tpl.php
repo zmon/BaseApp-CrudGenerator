@@ -1,6 +1,6 @@
 <?php
 
-namespace [[appns]]Http\Requests;
+namespace App\Http\Requests\[[model_uc]];
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -28,30 +28,30 @@ class [[model_uc]]FormRequest extends FormRequest
      */
     public function rules()
     {
-        $id = $this->route('[[model_singular]]');
+        $[[model_singular]] = $this->route('[[model_singular]]');
 
         $rules = [
-         //  Ignore duplicate email if it is this record
-         //   'email' => 'required|string|email|unique:invites,email,' . $id . '|unique:users|max:191',
+            //  Ignore duplicate email if it is this record
+            //   'email' => 'required|string|email|unique:invites,email,' . $id . '|unique:users|max:191',
 
 
+            'id' => 'numeric',
 [[foreach:columns]]
-[[if:i.name!='name']]
-            '[[i.name]]' => '[[i.validation]]',
-[[endif]]
+    [[if:i.name!='name']]
+        '[[i.name]]' => '[[i.validation]]',
+    [[endif]]
 [[endforeach]]
+            'reason_for_change' => 'required|string',
 
         ];
 
-[[foreach:columns]]
-[[if:i.name=='name']]
-                if ($this->route('[[model_singular]]')) {  // If ID we must be changing an existing record
-                    $rules['name'] = 'required|min:3|[[i.validation]]|unique:[[tablename]],name,' . $id;
-                } else {  // If not we must be adding one
-                    $rules['name'] = 'required|min:3|[[i.validation]]|unique:[[tablename]]';
-                }
-[[endif]]
-[[endforeach]]
+        if ($this->route('[[model_singular]]')) {  // If ID we must be changing an existing record
+            $rules['name'] = 'required|min:3|nullable|string|max:120|unique:[[model_plural]],name,' . $[[model_singular]]->id;
+//            $rules['alias'] = 'required|string|max:120|unique:[[model_plural]],alias,' . $[[model_singular]]->id;
+        } else {  // If not we must be adding one
+            $rules['name'] = 'required|min:3|nullable|string|max:120|unique:[[model_plural]],name';
+//            $rules['alias'] = 'required|string|max:120|unique:[[model_plural]],alias';
+        }
 
         return $rules;
     }

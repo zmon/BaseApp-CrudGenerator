@@ -4,7 +4,7 @@ namespace App\Http\Requests\[[model_uc]];
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class [[model_uc]]IndexRequest extends FormRequest
+class [[model_uc]]APIIndexRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -16,13 +16,6 @@ class [[model_uc]]IndexRequest extends FormRequest
         return request()->user()->can('[[model_singular]] index');
     }
 
-    // overwrite parent method to redirect unauthorized requests
-    protected function failedAuthorization()
-    {
-        session()->flash('flash_error_message', "Unauthorized");
-        abort(redirect('/home'));
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -30,6 +23,20 @@ class [[model_uc]]IndexRequest extends FormRequest
      */
     public function rules()
     {
-        return [];
+        return [
+            'page' => [
+                'numeric',
+            ],
+            'column' => [
+                'nullable',
+                'string',
+            ],
+            'direction' => [
+                'numeric',
+            ],
+            'keyword' => [
+                'string',
+            ],
+        ];
     }
 }

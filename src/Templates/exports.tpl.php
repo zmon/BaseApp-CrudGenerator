@@ -2,8 +2,8 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
@@ -33,7 +33,7 @@ class [[model_uc]]Export implements FromQuery, WithHeadings, WithMapping
     {
         return [
         [[foreach:columns]]
-        '[[i.name]]',
+            '[[i.name]]',
         [[endforeach]]
         ];
     }
@@ -45,7 +45,7 @@ class [[model_uc]]Export implements FromQuery, WithHeadings, WithMapping
     {
         return [
         [[foreach:columns]]
-        $[[model_singular]]->[[i.name]],
+            $[[model_singular]]->[[i.name]],
         [[endforeach]]
         ];
     }

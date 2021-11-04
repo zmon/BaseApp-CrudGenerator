@@ -16,15 +16,16 @@
         <div class="col-lg-6 mb-3 mb-lg-0">
 
             <!--   Search Filters       -->
-            <form class="form-inline" aria-label="Data Filters" @submit.prevent="debounceKeywordGetData()">
-                <div class="input-group ">
+            <search-filter-drop-down @update="applyFilters">
+                <template #search>
                     <input type="text" class="form-control" placeholder="Search by Name"
                            aria-label="Search by Name"
                            v-model="keyword"
-                           style="z-index:20;">
+                           style="z-index:20;"
+                           @keyup.enter="debounceKeywordGetData()">
                     <div class="input-group-append position-relative" style="z-index:20;">
                         <span class="input-group-text p-0">
-                            <a class="btn btn-primary" style="border-radius:0;"
+                            <a class="btn btn-primary" style="border-top-left-radius:0;border-bottom-left-radius:0;"
                                @click.prevent="debounceKeywordGetData()"
                                href="#"
                                role="button"
@@ -39,8 +40,43 @@
                             </a>
                         </span>
                     </div>
+                </template>
+                <template #filters>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <search-form-group
+                                label="Status"
+                                labelFor="active"
+                            >
+                                <ui-select-pick-one
+                                    :modelValue="searchFilters.active.value"
+                                    name="active"
+                                    :selected_id="searchFilters.active.value"
+                                    :blank_text=false
+                                    :optionsListData="searchFilters.active.options"
+                                    @input="addFilterRegister"
+                                >
+                                </ui-select-pick-one>
+                            </search-form-group>
+                        </div>
+                    </div>
+                </template>
+            </search-filter-drop-down>
+
+            <!--       Search Tags         -->
+            <div class="mt-2">
+                    <span class="text-primary d-inline-block align-middle me-2">
+                        <strong>Filters:</strong>
+                    </span>
+
+                <div class="d-inline-block me-3" v-for="(tag, i) in filterTags" :key="i">
+                    <search-tag
+                        :label="tag.label"
+                        :value="tag.value"
+                        v-on:remove="removeFilterTag(i)"
+                    ></search-tag>
                 </div>
-            </form>
+            </div>
         </div>
 
         <div class="col-lg-3 text-start text-lg-end">
@@ -190,7 +226,10 @@ export default {
         this.keyword = this.filters.keyword;
         // set search filters to params or defaults
 
-        this.getData(this.current_page);
+        this.filterRegister.active = this.filters.active;
+        this.searchFilters['active'].value = this.filters.active;
+
+        this.applyFilters(this.current_page);
     },
 
     data: function () {
@@ -217,11 +256,83 @@ export default {
             },
             server_message: false,
             try_logging_in: false,
+
+            searchFilters: {
+                active: {
+                    label: 'Active',
+                    default: '1',
+                    value: '1',
+                    options: [
+                        {text: 'All', value: '-1'},
+                        {text: 'Active', value: '1'},
+                        {text: 'Inactive', value: '0'},
+                    ]
+                }
+            },
+            filterRegister: {},
+            filterTags: []
         }
     },
 
     methods: {
         updateSearchData() {
+            this.getData()
+        },
+        applyFilters() {
+            // add register to filters
+            Object.keys(this.filterRegister).forEach((key) => {
+                this.searchFilters[key].value = this.filterRegister[key]
+            })
+            this.showAdvanced = false
+            // show filters tag
+            this.buildFilterTags()
+            // request query
+            this.getData()
+        },
+        addFilterRegister(e) {
+            this.filterRegister[e.target.name] = e.target.value
+        },
+        initFilterRegister() {
+            this.filterRegister = {}
+            Object.keys(this.searchFilters).forEach((key) => {
+                this.filterRegister[key] = this.searchFilters[key].value
+            })
+        },
+        buildFilterTags() {
+            let tags = []
+            Object.keys(this.searchFilters).forEach((key) => {
+                let obj = this.searchFilters[key]
+                let value = obj.value
+                // if we have an options array map to readable value
+                if (obj.options) {
+                    obj.options.forEach(option => {
+                        if (option.value === value) {
+                            value = option.text
+                        }
+                    })
+                }
+                // build tag and add to array
+                if (obj.value !== obj.default) {
+                    tags.push({
+                        label: obj.label,
+                        value: value,
+                        name: key
+                    })
+                }
+            })
+            this.filterTags = tags
+        },
+        removeFilterTag(index) {
+            // get default value
+            let tag = this.filterTags[index]
+            // set default value to filter
+            if (tag && this.searchFilters.hasOwnProperty(tag.name)) {
+                this.searchFilters[tag.name].value = this.searchFilters[tag.name].default
+            }
+
+            // remove from list
+            this.buildFilterTags()
+            // send request query
             this.getData()
         },
         // Add a slight delay as user types so we're not pinging
@@ -247,7 +358,13 @@ export default {
 
         getData: function (new_page_number = 1) {
 
-            let searchParams = '';
+            /// load filters
+            let searchParams = Object.keys(this.searchFilters)
+                .filter(k => !!this.searchFilters[k].value || this.searchFilters[k].value === "")
+                .map(k => {
+                    return k + "=" + this.searchFilters[k].value
+                })
+                .join('&')
 
             if (this.isDefined(this.keyword) && (this.keyword.trim().length > 0)) {
                 let formattedSearchText = 'keyword=' + this.keyword

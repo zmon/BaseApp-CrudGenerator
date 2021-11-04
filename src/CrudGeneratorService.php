@@ -98,7 +98,8 @@ class CrudGeneratorService
             $this->output->info('Creating directory: ' . base_path() . '/resources/views/' . $this->viewFolderName);
             mkdir(base_path() . '/resources/views/' . $this->viewFolderName);
         }
-
+print_r($options);
+        print_r($this->controllerName);
         $filegenerator = new CrudGeneratorFileCreator();
         $filegenerator->options = $options;
         $filegenerator->output = $this->output;
@@ -109,32 +110,74 @@ class CrudGeneratorService
         $filegenerator->Generate();
 
 
-        $filegenerator->templateName = 'controller';
-        $filegenerator->path = app_path() . '/Http/Controllers/' . $this->controllerName . 'Controller.php';
+        $vue_subdir = app_path() . "/Http/Controllers/$modelname";
+
+        if (!file_exists($vue_subdir)) {
+            mkdir($vue_subdir);
+        }
+
+        $filegenerator->templateName = 'Controller';
+        $filegenerator->path = app_path() . '/Http/Controllers/' . $this->modelName . '/' . $this->controllerName . 'Controller.php';
         $filegenerator->Generate();
 
         $filegenerator->templateName = 'Api';
-        $filegenerator->path = app_path() . '/Http/Controllers/' . $this->controllerName . 'Api.php';
+        $filegenerator->path = app_path() . '/Http/Controllers/' . $this->modelName . '/'  . $this->controllerName . 'Api.php';
         $filegenerator->Generate();
 
-        $filegenerator->templateName = 'IndexRequest';
-        $filegenerator->path = app_path() . '/Http/Requests/' . $modelname . 'IndexRequest.php';
-        $filegenerator->Generate();
-
-        $filegenerator->templateName = 'exports';
+        $filegenerator->templateName = 'Exports';
         $filegenerator->path = app_path() . '/Exports/' . $modelname . 'Export.php';
         $filegenerator->Generate();
 
+
+        $vue_subdir = app_path() . "/Http/Requests/$modelname";
+
+        if (!file_exists($vue_subdir)) {
+            mkdir($vue_subdir);
+        }
+
+        $filegenerator->templateName = 'APIIndexRequest';
+        $filegenerator->path = app_path() . "/Http/Requests/$modelname/${modelname}IndexRequest.php";
+        $filegenerator->Generate();
+        $filegenerator->templateName = 'CreateRequest';
+        $filegenerator->path = app_path() . "/Http/Requests/$modelname/${modelname}CreateRequest.php";
+        $filegenerator->Generate();
+        $filegenerator->templateName = 'DestroyRequest';
+        $filegenerator->path = app_path() . "/Http/Requests/$modelname/${modelname}DestroyRequest.php";
+        $filegenerator->Generate();
+        $filegenerator->templateName = 'DownloadRequest';
+        $filegenerator->path = app_path() . "/Http/Requests/$modelname/${modelname}DownloadRequest.php";
+        $filegenerator->Generate();
+        $filegenerator->templateName = 'EditRequest';
+        $filegenerator->path = app_path() . "/Http/Requests/$modelname/${modelname}EditRequest.php";
+        $filegenerator->Generate();
         $filegenerator->templateName = 'FormRequest';
-        $filegenerator->path = app_path() . '/Http/Requests/' . $modelname . 'FormRequest.php';
+        $filegenerator->path = app_path() . "/Http/Requests/$modelname/${modelname}FormRequest.php";
+        $filegenerator->Generate();
+        $filegenerator->templateName = 'IndexRequest';
+        $filegenerator->path = app_path() . "/Http/Requests/$modelname/${modelname}IndexRequest.php";
+        $filegenerator->Generate();
+        $filegenerator->templateName = 'PrintRequest';
+        $filegenerator->path = app_path() . "/Http/Requests/$modelname/${modelname}PrintRequest.php";
+        $filegenerator->Generate();
+        $filegenerator->templateName = 'ShowRequest';
+        $filegenerator->path = app_path() . "/Http/Requests/$modelname/${modelname}ShowRequest.php";
         $filegenerator->Generate();
 
-        $filegenerator->templateName = 'model';
+
+
+        $vue_subdir = app_path() . "/Http/Resources";
+
+        if (!file_exists($vue_subdir)) {
+            mkdir($vue_subdir);
+        }
+
+        $filegenerator->templateName = 'HistoryResource';
+        $filegenerator->path = app_path() . "/Http/Resources/${modelname}HistoryResource.php";
+        $filegenerator->Generate();
+
+
+        $filegenerator->templateName = 'Model';
         $filegenerator->path = app_path() . '/Models/' . $modelname . '.php';
-        $filegenerator->Generate();
-
-        $filegenerator->templateName = 'Observer';
-        $filegenerator->path = app_path() . '/Observers/' . $modelname . 'Observer.php';
         $filegenerator->Generate();
 
         $filegenerator->templateName = 'view.create';
@@ -156,9 +199,15 @@ class CrudGeneratorService
         $filegenerator->templateName = 'view.print';
         $filegenerator->path = base_path() . '/resources/views/' . $this->viewFolderName . '/print.blade.php';
         $filegenerator->Generate();
+        $filegenerator->templateName = 'view.difference';
+        $filegenerator->path = base_path() . '/resources/views/' . $this->viewFolderName . '/difference.blade.php';
+        $filegenerator->Generate();
+        $filegenerator->templateName = 'view.history';
+        $filegenerator->path = base_path() . '/resources/views/' . $this->viewFolderName . '/history.blade.php';
+        $filegenerator->Generate();
 
         // Put VueJS componets into a subdirectory
-        $vue_subdir = base_path() . '/resources/js/components/' . $this->tableName;
+        $vue_subdir = base_path() . '/resources/js/components/' . $modelname;
 
         if (!file_exists($vue_subdir)) {
             mkdir($vue_subdir);
@@ -167,11 +216,24 @@ class CrudGeneratorService
         $filegenerator->templateName = 'Grid.vue';
         $filegenerator->path = $vue_subdir . '/' . $modelname . 'Grid.vue';
         $filegenerator->Generate();
+        $filegenerator->templateName = 'GridAdvanced.vue';
+        $filegenerator->path = $vue_subdir . '/' . $modelname . 'GridAdvanced.vue';
+        $filegenerator->Generate();
 //        exec("prettier --write " . $vue_subdir . '/' . $modelname . 'Grid.vue');
 
+//        $filegenerator->templateName = 'History.vue';
+//        $filegenerator->path = $vue_subdir . '/' . $modelname . 'History.vue';
+//        $filegenerator->Generate();
+//        exec("prettier --write " . $vue_subdir . '/' . $modelname . 'Form.vue');
         $filegenerator->templateName = 'Form.vue';
         $filegenerator->path = $vue_subdir . '/' . $modelname . 'Form.vue';
         $filegenerator->Generate();
+//        exec("prettier --write " . $vue_subdir . '/' . $modelname . 'Form.vue');
+
+
+//        $filegenerator->templateName = 'History.vue';
+//        $filegenerator->path = $vue_subdir . '/' . $modelname . 'History.vue';
+//        $filegenerator->Generate();
 //        exec("prettier --write " . $vue_subdir . '/' . $modelname . 'Form.vue');
 
 

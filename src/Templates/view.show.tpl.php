@@ -1,57 +1,53 @@
-@extends('layouts.crud-master')
-@php $nav_path = ['[[route_path]]']; @endphp
+@extends('layouts.app')
+@php $nav_path = ['[[model_singular]]'] @endphp
 @section('page-title')
-View {{$[[model_singular]]->name}}
+    View {{$[[model_singular]]->name}}
 @endsection
 @section('page-header-title')
-View {{$[[model_singular]]->name}}
-@endsection
-@section('page-header-breadcrumbs')
-<ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('[[view_folder]].index') }}">[[display_name_plural]]</a></li>
-    <li class="breadcrumb-item active" aria-current="location">View {{$[[model_singular]]->name}}</li>
-</ol>
+    View {{$[[model_singular]]->name}}
 @endsection
 @section('content')
 
-    <[[route_path]]-show :record='@json($[[model_singular]])'></[[route_path]]-show>
+    <[[model_singular]]-show :record='@json($[[model_singular]])' csrf='{{ csrf_token() }}'>
+        <std-page-header header="View {{ $[[model_singular]]->name }}" cancel-url="/[[model_singular]]">
+        </std-page-header>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="row mt-4">
+
+        <template v-slot:footer>
+            <div class="row mt-1">
                 <div class="col-md-4">
                     @if ($can_edit)
-                        <a href="/[[route_path]]/{{ $[[model_singular]]->id }}/edit" class="btn btn-primary">Edit [[display_name_singular]]</a>
+                        <a href="/[[model_singular]]/{{  $[[model_singular]]->id }}/edit" class="btn btn-primary">Edit
+                            [[model_uc]]</a>
                     @endif
                 </div>
                 <div class="col-md-4 text-md-center mt-2 mt-md-0">
+                    <a href="/[[model_singular]]/{{  $[[model_singular]]->id }}/history" class="btn btn-primary">Show History</a>
+                </div>
+                <div class="col-md-4 text-md-end mt-2 mt-md-0">
                     @if ($can_delete)
-                        <form class="form" role="form" method="POST" action="/[[route_path]]/{{ $[[model_singular]]->id }}">
-                            @method('delete')
-                            @csrf
-
-                            <input class="btn btn-danger" Onclick="return ConfirmDelete();" type="submit" value="Delete [[display_name_singular]]">
-
+                        <form class="form" method="POST" action="/[[model_singular]]/{{$[[model_singular]]->id}}"
+                              onsubmit="return ConfirmDelete();">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="hidden" name="_token" value='{{ csrf_token() }}'/>
+                            <input type="submit" class="btn btn-danger"
+                                   value="Delete [[model_uc]]">
                         </form>
                     @endif
                 </div>
-                <div class="col-md-4 text-md-right mt-2 mt-md-0">
-                    <a href="{{ url('/[[route_path]]') }}" class="btn btn-default">Return to List</a>
-                </div>
             </div>
-        </div>
-    </div>
-</div>
+        </template>
+    </[[model_singular]]-show>
+
 @endsection
 @section('scripts')
-<script>
-    function ConfirmDelete() {
-        var x = confirm("Are you sure you want to delete this [[display_name_singular]]?");
-        if (x)
-            return true;
-        else
-            return false;
-    }
-</script>
+    <script>
+        function ConfirmDelete() {
+            var x = confirm("Are you sure you want to delete this [[model_uc]]?");
+            if (x)
+                return true;
+            else
+                return false;
+        }
+    </script>
 @endsection

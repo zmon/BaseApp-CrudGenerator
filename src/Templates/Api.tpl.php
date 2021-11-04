@@ -1,18 +1,16 @@
 <?php
 
-namespace [[appns]]Http\Controllers;
+namespace App\Http\Controllers\[[model_uc]];
 
-use [[appns]]Http\Controllers\Controller;
-use [[appns]]Http\Requests\[[model_uc]]IndexRequest;
-use [[appns]]Models\[[model_uc]];
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\[[model_uc]]\[[model_uc]]IndexRequest;
+use App\Models\[[model_uc]];
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
 
 
 class [[model_uc]]Api extends Controller
 {
-
-
     /**
      * Display a listing of the resource.
      *
@@ -21,79 +19,22 @@ class [[model_uc]]Api extends Controller
     public function index([[model_uc]]IndexRequest $request)
     {
 
-        $page = $request->get('page', '1');                // Pagination looks at the request
-        //    so not quite sure if we need this
-        $column = $request->get('column', 'Name');
-        $direction = $request->get('direction', '-1');
-        $keyword = $request->get('keyword', '');
+        $filters = Controller::getIndexFiltersFromRequestAndRemember(
+            $request,
+            [[model_uc]]Controller::getIndexFilters(),
+            [[model_uc]]Controller::getIndexFilterKeyPrefix()
+        );
 
-        // Save the search parameters so we can remember when we go back to the index
-        //   The page is being done by Laravel
-        session([
-            '[[model_singular]]_page' => $page,
-            '[[model_singular]]_column' => $column,
-            '[[model_singular]]_direction' => $direction,
-            '[[model_singular]]_keyword' => $keyword,
-        ]);
-
-        $keyword = $keyword != 'null' ? $keyword : '';
-        $column = $column ? mb_strtolower($column) : 'name';
-
-        return [[model_uc]]::indexData(10, $column, $direction, $keyword);
+        return [[model_uc]]::indexData(10, $filters);
     }
 
     /**
      * Returns "options" for HTML select.
-     * @return array
+     * @return Collection;
      */
-    public function getOptions()
+    public function getOptions(): Collection
     {
-
         return [[model_uc]]::getOptions();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param Request  $request
-     * @return Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int  $id
-     * @return Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request  $request
-     * @param int  $id
-     * @return Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int  $id
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

@@ -5,7 +5,7 @@
 Updated for Laravel 7
 
 ```
-php artisan make:crud [[model_plural]]  --display-name="[[model_uc_plural]]" --grid-columns="name"   # --force --skip-append
+php artisan make:crud [[model_plural]]  --display-name="[[display_name_plural]]" --grid-columns="name"   # --force --skip-append
 ```
 
 You will want to adjust the grid-columns to add more columns  for example to add alias
@@ -58,7 +58,7 @@ From the bottom of the file, add these to read-only
 Then run the following to install the permissions
 
 ```
-php artisan app:set-initial-permissions
+php artisan app:set-user-permissions
 ```
 
 ### Components
@@ -69,9 +69,10 @@ In `resource/js/components`
 Add
 
 ```
-Vue.component('[[view_folder]]-grid', () => import(/* webpackChunkName:"[[view_folder]]-grid" */ './components/[[tablename]]/[[model_uc]]Grid.vue'));
-Vue.component('[[view_folder]]-form', () => import(/* webpackChunkName:"[[view_folder]]-form" */ './components/[[tablename]]/[[model_uc]]Form.vue'));
-Vue.component('[[view_folder]]-show', () => import(/* webpackChunkName:"[[view_folder]]-show" */ './components/[[tablename]]/[[model_uc]]Show.vue'));
+[[model_uc]]Grid: defineAsyncComponent(() => import(/* webpackChunkName:"[[model_uc]]Grid" */ "./components/[[model_uc]]/[[model_uc]]Grid")),
+[[model_uc]]GridAdvanced: defineAsyncComponent(() => import(/* webpackChunkName:"[[model_uc]]GridAdvanced" */ "./components/[[model_uc]]/[[model_uc]]GridAdvanced")),
+[[model_uc]]Form: defineAsyncComponent(() => import(/* webpackChunkName:"[[model_uc]]Form" */ "./components/[[model_uc]]/[[model_uc]]Form")),
+[[model_uc]]Show: defineAsyncComponent(() => import(/* webpackChunkName:"[[model_uc]]Show" */ "./components/[[model_uc]]/[[model_uc]]Show")),
 
 ```
 
@@ -83,11 +84,26 @@ In `routes/web.php
 Add
 
 ```
-Route::get('/api-[[view_folder]]', 'App\Http\Controllers\[[controller_name]]Api@index');
-Route::get('/api-[[view_folder]]/options', 'App\Http\Controllers\[[controller_name]]Api@getOptions');
-Route::get('/[[view_folder]]/download', 'App\Http\Controllers\[[controller_name]]Controller@download')->name('[[view_folder]].download');
-Route::get('/[[view_folder]]/print', 'App\Http\Controllers\[[controller_name]]Controller@print')->name('[[view_folder]].print');
-Route::resource('/[[view_folder]]', 'App\Http\Controllers\[[controller_name]]Controller');
+    ///////////////////////////////////////////////////////////////////////////////
+    // [[display_name_plural]]
+    ///////////////////////////////////////////////////////////////////////////////
+
+    Route::get('/api-[[model_singular]]', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Api@index');
+    Route::get('/api-[[model_singular]]/options', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Api@getOptions');
+    Route::get('/[[model_singular]]/download', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Controller@download')->name('[[model_singular]].download');
+    Route::get('/[[model_singular]]/print', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Controller@print')->name('[[model_singular]].print');
+
+    Route::get('/[[model_singular]]/{[[model_singular]]}/history', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Controller@history')->name('[[model_singular]].history');
+    Route::get('/[[model_singular]]/{[[model_singular]]}/history/{history}', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Controller@historyDifference')
+        ->name('[[model_singular]].history-difference');
+
+    Route::resource('/[[model_singular]]', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Controller')
+        ->missing(function () {
+            session()->flash('flash_error_message', 'Cannot find the [[model_uc]].');
+            return Redirect::route('[[model_singular]].index');
+        });
+        
+        
 ```
 
 #### Add to the menu in `resources/views/layouts/crud-nav.blade.php`
@@ -96,8 +112,8 @@ Route::resource('/[[view_folder]]', 'App\Http\Controllers\[[controller_name]]Con
 
 ```
 @can(['[[model_singular]] index'])
-<li class="nav-item @php if(isset($nav_path[0]) && $nav_path[0] == '[[view_folder]]') echo 'active' @endphp">
-    <a class="nav-link" href="{{ route('[[view_folder]].index') }}">[[display_name_singular]] <span
+<li class="nav-item @php if(isset($nav_path[0]) && $nav_path[0] == '[[model_singular]]') echo 'active' @endphp">
+    <a class="nav-link" href="{{ route('[[model_singular]].index') }}">[[display_name_plural]] <span
             class="sr-only">(current)</span></a>
 </li>
 @endcan
@@ -107,8 +123,8 @@ Route::resource('/[[view_folder]]', 'App\Http\Controllers\[[controller_name]]Con
 
 ```
 @can(['[[model_singular]] index'])
-<a class="dropdown-item @php if(isset($nav_path[1]) && $nav_path[1] == '[[view_folder]]') echo 'active' @endphp"
-   href="/[[view_folder]]">[[display_name_singular]]</a>
+<a class="dropdown-item @php if(isset($nav_path[1]) && $nav_path[1] == '[[model_singular]]') echo 'active' @endphp"
+   href="/[[model_singular]]">[[display_name_plural]]</a>
 @endcan
 ```
 
@@ -118,20 +134,18 @@ Route::resource('/[[view_folder]]', 'App\Http\Controllers\[[controller_name]]Con
 
 
 ```
-app/Exports/[[controller_name]]Export.php
-app/Http/Controlers/[[controller_name]]Controler.php
-app/Http/Controlers/[[controller_name]]Api.php
-app/Http/Requests/[[controller_name]]FormRequest.php
-app/Http/Requests/[[controller_name]]IndexRequest.php
-app/Lib/Import/Import[[controller_name]].php
-app/Observers/[[controller_name]]Observer.php
+app/Exports/[[model_uc]]Export.php
+app/Http/Controlers/[[model_uc]]Controler.php
+app/Http/Controlers/[[model_uc]]Api.php
+app/Http/Requests/[[model_uc]]FormRequest.php
+app/Http/Requests/[[model_uc]]IndexRequest.php
+app/Lib/Import/Import[[model_uc]].php
+app/Observers/[[model_uc]]Observer.php
 app/[[model_uc]].php
-resources/js/components/[[tablename]]
-resources/views/[[tablename]]
-
-node_modules/.bin/prettier --write resources/js/components/[[tablename]]/" . [[modelname]] . 'Grid.vue'
-node_modules/.bin/prettier --write resources/js/components/[[tablename]]/" . [[modelname]] . 'Form.vue'
-node_modules/.bin/prettier --write resources/js/components/[[tablename]]/" . [[modelname]] . 'Show.vue'
+resources/js/components/[[model_plural]]resources/views/[[model_plural]]
+node_modules/.bin/prettier --write resources/js/components/[[model_plural]]/" . [[modelname]] . 'Grid.vue'
+node_modules/.bin/prettier --write resources/js/components/[[model_plural]]/" . [[modelname]] . 'Form.vue'
+node_modules/.bin/prettier --write resources/js/components/[[model_plural]]/" . [[modelname]] . 'Show.vue'
 ```
 
 
@@ -144,7 +158,7 @@ node_modules/.bin/prettier --write resources/js/components/[[tablename]]/" . [[m
     label-for="[[model_singular]]_id"
     :errors="form_errors.[[model_singular]]_id">
     <ui-select-pick-one
-        url="/api-[[view_folder]]/options"
+        url="/api-[[model_singular]]/options"
         v-model="form_data.[[model_singular]]_id"
         :selected_id="form_data.[[model_singular]]_id"
         name="[[model_singular]]_id"
@@ -167,7 +181,7 @@ components: { UiSelectPickOne },
     label-for="[[model_singular]]_id"
     :errors="form_errors.[[model_singular]]_id">
     <ui-select-pick-one
-        url="/api-[[view_folder]]/options"
+        url="/api-[[model_singular]]/options"
         v-model="form_data.[[model_singular]]_id"
         :selected_id="form_data.[[model_singular]]_id"
         name="[[model_singular]]_id"
@@ -192,7 +206,7 @@ $[[model_singular]]_options = \App\[[model_uc]]::getOptions();
 @component('../components/select-pick-one', [
 'fld' => '[[model_singular]]_id',
 'selected_id' => $RECORD->[[model_singular]]_id,
-'first_option' => 'Select a [[model_uc_plural]]',
+'first_option' => 'Select a [[display_name_plural]]',
 'options' => $[[model_singular]]_options
 ])
 @endcomponent
@@ -213,8 +227,8 @@ Vue.component('[[model_singular]]', require('./components/[[model_singular]].vue
 #### Remove dead code
 
 ```
-rm app/Queries/GridQueries/[[controller_name]]Query.php
-rm resources/js/components/[[controller_name]]Grid.vue
+rm app/Queries/GridQueries/[[model_uc]]Query.php
+rm resources/js/components/[[model_uc]]Grid.vue
 ```
 
 

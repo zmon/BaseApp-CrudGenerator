@@ -4,7 +4,7 @@ namespace App\Http\Requests\[[model_uc]];
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class [[model_uc]]IndexRequest extends FormRequest
+class [[model_uc]]ShowRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,14 +13,14 @@ class [[model_uc]]IndexRequest extends FormRequest
      */
     public function authorize()
     {
-        return request()->user()->can('[[model_singular]] index');
+        return request()->user()->can('[[model_singular]] show');
     }
 
     // overwrite parent method to redirect unauthorized requests
     protected function failedAuthorization()
     {
-        session()->flash('flash_error_message', "Unauthorized");
-        abort(redirect('/home'));
+        session()->flash('flash_error_message', "You are not authorized to view an [[model_uc]]'s details.");
+        abort(redirect()->route('[[model_singular]].index'));
     }
 
     /**
