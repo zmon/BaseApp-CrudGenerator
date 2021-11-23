@@ -13,14 +13,14 @@ class [[model_uc]]EditRequest extends FormRequest
      */
     public function authorize()
     {
-        return request()->user()->can('[[model_singular]] edit');
+        return request()->user()->can('[[route_path]] edit');
     }
 
     // overwrite parent method to redirect unauthorized requests
     protected function failedAuthorization()
     {
         session()->flash('flash_error_message', "You are not authorized to change an [[model_uc]]'s details.");
-        abort(redirect()->route('[[model_singular]].index'));
+        abort(redirect()->route('[[route_path]].index'));
     }
 
     /**

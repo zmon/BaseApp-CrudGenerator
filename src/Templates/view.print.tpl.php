@@ -2,11 +2,9 @@
 @section('page-title', '[[display_name_plural]]')
 @section('table-headings-row')
     <tr>
-        <th>Name</th>
-        <th>Contact Name</th>
-        <th>Email</th>
-        <th>File Name Alias</th>
-        <th>Active</th>
+        [[foreach:grid_columns]]
+        <th>{{ $obj->[[i.display]] }}</th>
+        [[endforeach]]
     </tr>
 @endsection
 @section('table-data-rows')

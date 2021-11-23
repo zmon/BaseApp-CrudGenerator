@@ -36,7 +36,7 @@
 <script>
 
 export default {
-    name: "[[model_singular]]-show",
+    name: "[[view_folder]]-show",
     props: {
         record: {
             type: [Boolean, Object],

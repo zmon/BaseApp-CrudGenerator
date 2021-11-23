@@ -5,7 +5,11 @@
     <form @submit.prevent="handleSubmit" @invalid.capture="handleInvalid" class="form-horizontal">
 
         <div v-if="server_message !== false" class="alert alert-danger" role="alert">
-            {{ this.server_message }} <a v-if="try_logging_in" href="/login">Login</a>
+            <img src="/img/icons/danger.svg"
+                 width="40" height="40"
+                 class="align-middle d-inline-block"
+                 alt="">
+            <span class="align-middle d-inline-block">{{ this.server_message }} <a v-if="try_logging_in" href="/login">Login</a></span>
         </div>
 
         <slot></slot>
@@ -78,7 +82,7 @@
         </div><!-- End centered columns -->
 
         <div class="row mt-3">
-            <div class="col-12 text-end  pe-5">
+            <div class="col-12 text-end  pe-5 d-print-none">
                 <button type="submit" class="btn btn-primary" :disabled="processing">
                     <span v-if="this.form_data.id">Change [[model_uc]]</span>
                     <span v-else="this.form_data.id">Add [[model_uc]]</span>
@@ -93,7 +97,7 @@
 import axios from 'axios';
 
 export default {
-    name: "[[model_singular]]-form",
+    name: "[[view_folder]]-form",
     props: {
         record: {
             type: [Boolean, Object],
@@ -163,10 +167,10 @@ export default {
             let url = '';
             let amethod = '';
             if (this.form_data.id) {
-                url = '/[[model_singular]]/' + this.form_data.id;
+                url = '/[[route_path]]/' + this.form_data.id;
                 amethod = 'put';
             } else {
-                url = '/[[model_singular]]';
+                url = '/[[route_path]]';
                 amethod = 'post';
             }
             await axios({
@@ -176,7 +180,7 @@ export default {
             })
                 .then((res) => {
                     if (res.status === 200 && res.data.message) {
-                        window.location = '/[[model_singular]]';
+                        window.location = '/[[route_path]]';
                     } else {
                         this.server_message = res.status;
                     }
@@ -194,7 +198,7 @@ export default {
                             this.server_message = "The given data was invalid. Please correct the fields indicated below.";
                         } else if (error.response.status === 404) {  // Record not found
                             this.server_message = 'Record not found';
-                            window.location = '/[[model_singular]]';
+                            window.location = '/[[route_path]]';
                         } else if (error.response.status === 419) {  // Unknown status
                             this.server_message = 'Unknown Status, please try to ';
                             this.try_logging_in = true;

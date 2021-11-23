@@ -15,6 +15,7 @@ class CrudGeneratorService
     public $modelName = '';
     public $tableName = '';
     public $displayName = '';
+    public $nameField = 'name';
     public $prefix = '';
     public $force = false;
     public $skip_append = false;
@@ -55,6 +56,7 @@ class CrudGeneratorService
             'skip_append' => $this->skip_append,
             'display_name_singular' => $this->displayName,
             'display_name_plural' => Str::plural($this->displayName),
+            'name_field' => $this->nameField,
             'model_uc' => $modelname,
             'model_uc_plural' => Str::plural($modelname),
             'model_singular' => $model_singular,

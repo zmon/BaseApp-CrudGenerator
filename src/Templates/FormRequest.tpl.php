@@ -14,10 +14,10 @@ class [[model_uc]]FormRequest extends FormRequest
      */
     public function authorize()
     {
-        if ($this->route('[[model_singular]]')) {  // If ID we must be changing an existing record
-            return Auth::user()->can('[[model_singular]] update');
+        if ($this->route('[[route_path]]')) {  // If ID we must be changing an existing record
+            return Auth::user()->can('[[route_path]] update');
         } else {  // If not we must be adding one
-            return Auth::user()->can('[[model_singular]] add');
+            return Auth::user()->can('[[route_path]] add');
         }
     }
 
@@ -46,10 +46,10 @@ class [[model_uc]]FormRequest extends FormRequest
         ];
 
         if ($this->route('[[model_singular]]')) {  // If ID we must be changing an existing record
-            $rules['name'] = 'required|min:3|nullable|string|max:120|unique:[[model_plural]],name,' . $[[model_singular]]->id;
+            $rules['[[name_field]]'] = 'required|min:3|nullable|string|max:120|unique:[[tablename]],[[name_field]],' . $[[model_singular]]->id;
 //            $rules['alias'] = 'required|string|max:120|unique:[[model_plural]],alias,' . $[[model_singular]]->id;
         } else {  // If not we must be adding one
-            $rules['name'] = 'required|min:3|nullable|string|max:120|unique:[[model_plural]],name';
+            $rules['[[name_field]]'] = 'required|min:3|nullable|string|max:120|unique:[[tablename]],[[name_field]]';
 //            $rules['alias'] = 'required|string|max:120|unique:[[model_plural]],alias';
         }
 

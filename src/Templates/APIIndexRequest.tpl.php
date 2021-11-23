@@ -13,7 +13,7 @@ class [[model_uc]]APIIndexRequest extends FormRequest
      */
     public function authorize()
     {
-        return request()->user()->can('[[model_singular]] index');
+        return request()->user()->can('[[route_path]] index');
     }
 
     /**

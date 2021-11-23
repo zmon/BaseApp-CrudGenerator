@@ -44,7 +44,7 @@ class [[model_uc]]Controller extends Controller
         return [
             'page' => '',  // Special to pagination
             'keyword' => '',
-            'sort_column' => 'name',
+            'sort_column' => '[[name_field]]',
             'sort_direction' => 'asc',
             'active' => '1', // FILTER SETUP: set defaul
         ];
@@ -56,7 +56,7 @@ class [[model_uc]]Controller extends Controller
      */
     static public function getIndexFilterKeyPrefix(): string
     {
-        return '[[model_singular]]';
+        return '[[route_path]]';
     }
 
     /**
@@ -65,7 +65,7 @@ class [[model_uc]]Controller extends Controller
      */
     private $print_columns = [
 [[foreach:grid_columns]]
-            '[[model_plural]].[[i.name]]',
+            '[[tablename]].[[i.name]]',
 [[endforeach]]
     ];
 
@@ -86,7 +86,7 @@ class [[model_uc]]Controller extends Controller
             self::getIndexFilters(),
             self::getIndexFilterKeyPrefix()
         );
-        $permissions = $this->getUserPermissions($request->user(), '[[model_singular]]');
+        $permissions = $this->getUserPermissions($request->user(), '[[route_path]]');
 
         return view('[[view_folder]].index', compact('filters', 'permissions'));
     }
@@ -125,7 +125,7 @@ class [[model_uc]]Controller extends Controller
             return $this->handleExceptionResponse($e);
         }
 
-        $request->session()->flash('flash_success_message', '[[model_uc]] ' . $[[model_singular]]->name . ' was added.');
+        $request->session()->flash('flash_success_message', '[[model_uc]] ' . $[[model_singular]]->[[name_field]] . ' was added.');
 
         return response()->json([
             'message' => 'Added record',
@@ -143,8 +143,8 @@ class [[model_uc]]Controller extends Controller
     {
 
         $relationship_data = $this->getRelationshipData($[[model_singular]]->id);
-        $can_edit = $request->user()->can('[[model_singular]] edit');
-        $can_delete = ($request->user()->can('[[model_singular]] delete') && $[[model_singular]]->canDelete());
+        $can_edit = $request->user()->can('[[route_path]] edit');
+        $can_delete = ($request->user()->can('[[route_path]] delete') && $[[model_singular]]->canDelete());
         return view('[[view_folder]].show', compact('[[model_singular]]', 'can_edit', 'can_delete', 'relationship_data'));
 
     }
@@ -176,10 +176,10 @@ class [[model_uc]]Controller extends Controller
             try {
                 $[[model_singular]]->save();
             } catch (Exception $e) {
-                return $this->handleExceptionResponse($e, 'Unable to update [[model_uc]] ' . $[[model_singular]]->name);
+                return $this->handleExceptionResponse($e, 'Unable to update [[model_uc]] ' . $[[model_singular]]->[[name_field]]);
             }
 
-            $request->session()->flash('flash_success_message', '[[model_uc]] ' . $[[model_singular]]->name . ' was changed.');
+            $request->session()->flash('flash_success_message', '[[model_uc]] ' . $[[model_singular]]->[[name_field]] . ' was changed.');
         } else {
             $request->session()->flash('flash_info_message', 'No changes were made.');
         }
@@ -202,16 +202,16 @@ class [[model_uc]]Controller extends Controller
             try {
                 $[[model_singular]]->delete();
             } catch (Exception $e) {
-                return $this->handleExceptionResponse($e, 'Unable to remove [[model_uc]] ' . $[[model_singular]]->name);
+                return $this->handleExceptionResponse($e, 'Unable to remove [[model_uc]] ' . $[[model_singular]]->[[name_field]]);
             }
 
-            $request->session()->flash('flash_success_message', '[[model_uc]] ' . $[[model_singular]]->name . ' was removed.');
+            $request->session()->flash('flash_success_message', '[[model_uc]] ' . $[[model_singular]]->[[name_field]] . ' was removed.');
         } else {
             $request->session()->flash('flash_error_message', 'Unable to remove this [[model_singular]].');
 
         }
 
-        return Redirect::route('[[model_singular]].index');
+        return Redirect::route('[[route_path]].index');
 
     }
 
@@ -228,7 +228,9 @@ class [[model_uc]]Controller extends Controller
             return $q->with('user')->orderBy('histories.created_at', 'desc');
         }]);
         $histories = [[model_uc]]HistoryResource::collection(
-            $[[model_singular]]->histories->map(fn($h) => [[model_uc]]::formattedHistoryComparison($h))
+            $[[model_singular]]->histories->map(function ($h) {
+                return [[model_uc]]::formattedHistoryComparison($h);
+            })
         );
 
         return view('[[view_folder]].history', compact('[[model_singular]]', 'histories'));
@@ -245,7 +247,7 @@ class [[model_uc]]Controller extends Controller
     {
 
         $history->load('user');
-        $history->old_user_name = $history->old['modified_by'] ?? null ? User::find($history->old['modified_by'])->name : "N/A";
+        $history->old_user_name = $history->old['modified_by'] ?? null ? User::find($history->old['modified_by'])->[[name_field]] : "N/A";
         $history = [[model_uc]]HistoryResource::make([[model_uc]]::formattedHistoryComparison($history));
 
         $previous = $[[model_singular]]->histories()
@@ -257,10 +259,10 @@ class [[model_uc]]Controller extends Controller
             ->where('created_at', '>', $history->created_at)->orderBy('created_at', 'asc')
             ->first();
 
-        $next = $next ? route('[[model_singular]].history-difference', ['[[model_singular]]' => $[[model_singular]], 'history' => $next])
+        $next = $next ? route('[[route_path]].history-difference', ['[[model_singular]]' => $[[model_singular]], 'history' => $next])
             : null;
         $previous = $previous ?
-            route('[[model_singular]].history-difference', ['[[model_singular]]' => $[[model_singular]], 'history' => $previous])
+            route('[[route_path]].history-difference', ['[[model_singular]]' => $[[model_singular]], 'history' => $previous])
             : null;
 
 
@@ -292,7 +294,7 @@ class [[model_uc]]Controller extends Controller
 
         return Excel::download(
             new [[model_uc]]Export($dataQuery),
-            '[[model_singular]].xlsx');
+            '[[route_path]].xlsx');
 
     }
 
@@ -318,7 +320,7 @@ class [[model_uc]]Controller extends Controller
         $pdf->setOptions(['isPhpEnabled' => true]);
         $pdf->loadHTML($printHtml);
         $currentDate = new DateTime();
-        return $pdf->stream('[[model_singular]]-' . $currentDate->format('Ymd_Hi') . '.pdf');
+        return $pdf->stream('[[route_path]]-' . $currentDate->format('Ymd_Hi') . '.pdf');
 
     }
 

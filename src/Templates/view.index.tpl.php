@@ -1,12 +1,12 @@
 @extends('layouts.app')
-@php $nav_path = ['[[model_singular]]'] @endphp
+@php $nav_path = ['[[route_path]]'] @endphp
 @section('page-title', '[[display_name_plural]]')
 @section('page-header-title', '[[display_name_plural]]')
-@section('page-help-link', '/help/[[model_singular]]#help-item-list')
+@section('page-help-link', '/help/[[route_path]]#help-item-list')
 
 @section('content')
-    <[[model_singular]]-grid-advanced
+    <[[view_folder]]-grid-advanced
         :filters='@json($filters)'
         :permissions='@json($permissions)'
-    ></[[model_singular]]-grid-advanced>
+    ></[[view_folder]]-grid-advanced>
 @endsection

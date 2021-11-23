@@ -87,9 +87,9 @@ class [[model_uc]] extends Model
         $filters)
     {
         return self::buildBaseGridQuery($filters,
-            ['[[model_plural]].id',
+            ['[[tablename]].id',
                 [[foreach:grid_columns]]
-                    '[[model_plural]].[[i.name]]',
+                    '[[tablename]].[[i.name]]',
                 [[endforeach]]
             ])
             ->paginate($per_page);
@@ -121,11 +121,11 @@ class [[model_uc]] extends Model
             ->orderBy($filters['sort_column'], $direction);
 
         if ($keyword = $filters['keyword']) {
-            $query->where('[[model_plural]].name', 'like', '%' . $keyword . '%');
+            $query->where('[[tablename]].[[name_field]]', 'like', '%' . $keyword . '%');
         }
 
         if (($active = data_get($filters, 'active',1)) != -1) {  // FILTER SETUP: set default
-            $query->where('[[model_plural]].active', $active);
+            $query->where('[[tablename]].active', $active);
         }
 
 
@@ -182,8 +182,8 @@ class [[model_uc]] extends Model
         $thisModel = new static;
 
         $records = $thisModel::select('id',
-            '[[model_plural]].name')
-            ->orderBy('[[model_plural]].name')
+            '[[tablename]].name')
+            ->orderBy('[[tablename]].name')
             ->get();
 
         return $records;

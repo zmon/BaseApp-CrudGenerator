@@ -27,32 +27,25 @@ To replace all files, uncomment `--force`
 From the bottom of the file put these at the top in alpha order
 
 ```
-        Permission::findOrCreate('[[model_singular]] index');
-        Permission::findOrCreate('[[model_singular]] view');
-        Permission::findOrCreate('[[model_singular]] export-pdf');
-        Permission::findOrCreate('[[model_singular]] export-excel');
-        Permission::findOrCreate('[[model_singular]] add');
-        Permission::findOrCreate('[[model_singular]] edit');
-        Permission::findOrCreate('[[model_singular]] delete');
+        Permission::findOrCreate('[[route_path]] index');
+        Permission::findOrCreate('[[route_path]] view');
+        Permission::findOrCreate('[[route_path]] export-pdf');
+        Permission::findOrCreate('[[route_path]] export-excel');
+        Permission::findOrCreate('[[route_path]] add');
+        Permission::findOrCreate('[[route_path]] edit');
+        Permission::findOrCreate('[[route_path]] delete');
 ```
 
 From the bottom of the file, add these to admin
 
 ```
-'[[model_singular]] index',
-'[[model_singular]] view',
-'[[model_singular]] export-pdf',
-'[[model_singular]] export-excel',
-'[[model_singular]] add',
-'[[model_singular]] edit',
-'[[model_singular]] delete',
+$permissions = $this->setRoles($permissions, '[[route_path]]', 'All');
 ```
 
 From the bottom of the file, add these to read-only
 
 ```
-        '[[model_singular]] index',
-        '[[model_singular]] view',
+$permissions = $this->setRoles($permissions, '[[route_path]]', 'Index');
 ```
 
 Then run the following to install the permissions
@@ -88,22 +81,22 @@ Add
     // [[display_name_plural]]
     ///////////////////////////////////////////////////////////////////////////////
 
-    Route::get('/api-[[model_singular]]', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Api@index');
-    Route::get('/api-[[model_singular]]/options', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Api@getOptions');
-    Route::get('/[[model_singular]]/download', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Controller@download')->name('[[model_singular]].download');
-    Route::get('/[[model_singular]]/print', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Controller@print')->name('[[model_singular]].print');
+    Route::get('/api-[[route_path]]', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Api@index');
+    Route::get('/api-[[route_path]]/options', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Api@getOptions');
+    Route::get('/[[route_path]]/download', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Controller@download')->name('[[route_path]].download');
+    Route::get('/[[route_path]]/print', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Controller@print')->name('[[route_path]].print');
 
-    Route::get('/[[model_singular]]/{[[model_singular]]}/history', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Controller@history')->name('[[model_singular]].history');
-    Route::get('/[[model_singular]]/{[[model_singular]]}/history/{history}', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Controller@historyDifference')
-        ->name('[[model_singular]].history-difference');
+    Route::get('/[[route_path]]/{[[model_singular]]}/history', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Controller@history')->name('[[route_path]].history');
+    Route::get('/[[route_path]]/{[[model_singular]]}/history/{history}', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Controller@historyDifference')
+        ->name('[[route_path]].history-difference');
 
-    Route::resource('/[[model_singular]]', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Controller')
+    Route::resource('/[[route_path]]', 'App\Http\Controllers\[[model_uc]]\[[model_uc]]Controller')
         ->missing(function () {
             session()->flash('flash_error_message', 'Cannot find the [[model_uc]].');
-            return Redirect::route('[[model_singular]].index');
+            return Redirect::route('[[route_path]].index');
         });
-        
-        
+
+
 ```
 
 #### Add to the menu in `resources/views/layouts/crud-nav.blade.php`
@@ -111,9 +104,9 @@ Add
 ##### Menu
 
 ```
-@can(['[[model_singular]] index'])
-<li class="nav-item @php if(isset($nav_path[0]) && $nav_path[0] == '[[model_singular]]') echo 'active' @endphp">
-    <a class="nav-link" href="{{ route('[[model_singular]].index') }}">[[display_name_plural]] <span
+@can(['[[route_path]] index'])
+<li class="nav-item @php if(isset($nav_path[0]) && $nav_path[0] == '[[route_path]]') echo 'active' @endphp">
+    <a class="nav-link" href="{{ route('[[route_path]].index') }}">[[display_name_plural]] <span
             class="sr-only">(current)</span></a>
 </li>
 @endcan
@@ -122,9 +115,9 @@ Add
 ##### Sub Menu
 
 ```
-@can(['[[model_singular]] index'])
-<a class="dropdown-item @php if(isset($nav_path[1]) && $nav_path[1] == '[[model_singular]]') echo 'active' @endphp"
-   href="/[[model_singular]]">[[display_name_plural]]</a>
+@can(['[[route_path]] index'])
+<a class="dropdown-item @php if(isset($nav_path[1]) && $nav_path[1] == '[[route_path]]') echo 'active' @endphp"
+   href="/[[route_path]]">[[display_name_plural]]</a>
 @endcan
 ```
 
@@ -156,9 +149,9 @@ node_modules/.bin/prettier --write resources/js/components/[[model_plural]]/" . 
 <std-form-group
     label="[[model_uc]]"
     label-for="[[model_singular]]_id"
-    :errors="form_errors.[[model_singular]]_id">
+    :errors="form_errors.[[route_path]]_id">
     <ui-select-pick-one
-        url="/api-[[model_singular]]/options"
+        url="/api-[[route_path]]/options"
         v-model="form_data.[[model_singular]]_id"
         :selected_id="form_data.[[model_singular]]_id"
         name="[[model_singular]]_id"
@@ -181,7 +174,7 @@ components: { UiSelectPickOne },
     label-for="[[model_singular]]_id"
     :errors="form_errors.[[model_singular]]_id">
     <ui-select-pick-one
-        url="/api-[[model_singular]]/options"
+        url="/api-[[route_path]]/options"
         v-model="form_data.[[model_singular]]_id"
         :selected_id="form_data.[[model_singular]]_id"
         name="[[model_singular]]_id"
@@ -196,7 +189,7 @@ components: { UiSelectPickOne },
 ### In Controller
 
 ```
-$[[model_singular]]_options = \App\[[model_uc]]::getOptions();
+$[[route_path]]_options = \App\[[model_uc]]::getOptions();
 ```
 
 
@@ -221,7 +214,7 @@ $[[model_singular]]_options = \App\[[model_uc]]::getOptions();
 Remove
 
 ```
-Vue.component('[[model_singular]]', require('./components/[[model_singular]].vue').default);
+Vue.component('[[route_path]]', require('./components/[[route_path]].vue').default);
 ```
 
 #### Remove dead code

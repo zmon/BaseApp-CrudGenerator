@@ -4,13 +4,14 @@ namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
 /**
  * Class [[model_uc]]Export - Export to Excel Spreadsheet.
  */
-class [[model_uc]]Export implements FromQuery, WithHeadings, WithMapping
+class [[model_uc]]Export implements ShouldAutoSize, FromQuery, WithHeadings, WithMapping
 {
     use Exportable;
 

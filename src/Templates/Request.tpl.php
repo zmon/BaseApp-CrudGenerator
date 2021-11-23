@@ -14,10 +14,10 @@ class [[model_uc]]Request extends FormRequest
      */
     public function authorize()
     {
-        if ($this->route('[[model_singular]]')) {  // If ID we must be changing an existing record
-            return Auth::user()->can('[[model_singular]] update');
+        if ($this->route('[[route_path]]')) {  // If ID we must be changing an existing record
+            return Auth::user()->can('[[route_path]] update');
         } else {  // If not we must be adding one
-            return Auth::user()->can('[[model_singular]] add');
+            return Auth::user()->can('[[route_path]] add');
         }
     }
 
@@ -28,7 +28,7 @@ class [[model_uc]]Request extends FormRequest
      */
     public function rules()
     {
-        $id = $this->route('[[model_singular]]');
+        $id = $this->route('[[route_path]]');
 
         $rules = [
          //  Ignore duplicate email if it is this record
@@ -44,7 +44,7 @@ class [[model_uc]]Request extends FormRequest
 
 [[foreach:columns]]
 [[if:i.name=='name']]
-                if ($this->route('[[model_singular]]')) {  // If ID we must be changing an existing record
+                if ($this->route('[[route_path]]')) {  // If ID we must be changing an existing record
                     $rules['name'] = '[[i.validation]]|unique:[[tablename]],name,' . $id;
                 } else {  // If not we must be adding one
                     $rules['name'] = '[[i.validation]]|unique:[[tablename]]';

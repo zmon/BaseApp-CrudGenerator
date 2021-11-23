@@ -1,15 +1,15 @@
 @extends('layouts.app')
-@php $nav_path = ['[[model_singular]]'] @endphp
+@php $nav_path = ['[[route_path]]'] @endphp
 @section('page-title')
     Add New [[model_uc]]
 @endsection
 @section('page-header-title')
     Add New [[model_uc]]
 @endsection
-@section('page-help-link', '/help/[[model_singular]]#help-item-add-edit')
+@section('page-help-link', '/help/[[route_path]]#help-item-add-edit')
 @section('content')
-    <[[model_singular]]-form csrf_token="{{ csrf_token() }}">
-        <std-page-header header="Add [[model_uc]]" cancel-url="/[[model_singular]]">
+    <[[view_folder]]-form csrf_token="{{ csrf_token() }}">
+        <std-page-header header="Add [[model_uc]]" cancel-url="/[[route_path]]">
         </std-page-header>
-    </[[model_singular]]-form>
+    </[[view_folder]]-form>
 @endsection

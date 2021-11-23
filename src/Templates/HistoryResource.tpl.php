@@ -27,13 +27,21 @@ class [[model_uc]]HistoryResource extends JsonResource
             ->where('created_at', '<', $this->created_at)
             ->orderBy('created_at', 'desc')
             ->first();
+
         $previous_reason_for_change = $previous? $previous->reason_for_change: null;
+
+        $old_user_name = 'N/A';
+        $modified_by_id = data_get($this->old,'modified_by', 'false');
+        if ($modified_by_id && $modified_by_id != -1) {
+            $old_user_name = data_get(User::find($modified_by_id), 'name', 'n/a');
+        }
+
         return [
 
             'diff' => $this->diff ?? null,
             'id' => $this->id,
             'old' => [
-                'user_name' => $this->old['modified_by'] ?? null ? User::find($this->old['modified_by'])->name : "N/A",
+                'user_name' => $old_user_name,
                 'created_at' => $this->old['created_at'] ?? null,
             ],
             'new' => [

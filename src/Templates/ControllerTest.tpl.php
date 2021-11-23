@@ -32,7 +32,7 @@ class [[model_uc]]ControllerTest extends TestCase
      */
     public function prevent_non_logged_in_users_from_seeing_[[model_singular]]_index()
     {
-        $response = $this->get('/[[model_singular]]');
+        $response = $this->get('/[[route_path]]');
 
         $this->withoutMiddleware();
         $response->assertRedirect('login');
@@ -43,7 +43,7 @@ class [[model_uc]]ControllerTest extends TestCase
      */
     public function prevent_non_logged_in_users_from_creating_[[model_singular]]()
     {
-        $response = $this->get(route('[[model_singular]].create'));
+        $response = $this->get(route('[[route_path]].create'));
 
         $this->withoutMiddleware();
         $response->assertRedirect('login');
@@ -57,7 +57,7 @@ class [[model_uc]]ControllerTest extends TestCase
 //    public function prevent_non_logged_in_users_from_storing_[[model_singular]]()
 //    {
 //
-//        $response = $this->post(route('[[model_singular]].store'),
+//        $response = $this->post(route('[[route_path]].store'),
 //                [
 //                    'name' => 'test create org',
 //                    'contact_name' => "Jilm Test",
@@ -68,7 +68,7 @@ class [[model_uc]]ControllerTest extends TestCase
 //
 ////        $response->assertStatus(200);
 ////
-////        $response = $this->post(route('[[model_singular]].store'));
+////        $response = $this->post(route('[[route_path]].store'));
 //
 //        $this->withoutMiddleware(VerifyCsrfToken::class);
 //
@@ -82,7 +82,7 @@ class [[model_uc]]ControllerTest extends TestCase
     public function prevent_non_logged_in_users_from_showing_[[model_singular]]()
     {
         // Should check for permisson before checking to see if record exists
-        $response = $this->get(route('[[model_singular]].show', ['[[model_singular]]' => 1]));
+        $response = $this->get(route('[[route_path]].show', ['[[model_singular]]' => 1]));
 
         $this->withoutMiddleware();
         $response->assertRedirect('login');
@@ -94,7 +94,7 @@ class [[model_uc]]ControllerTest extends TestCase
     public function prevent_non_logged_in_users_from_editing_[[model_singular]]()
     {
         // Should check for permisson before checking to see if record exists
-        $response = $this->get(route('[[model_singular]].edit', ['[[model_singular]]' => 1]));
+        $response = $this->get(route('[[route_path]].edit', ['[[model_singular]]' => 1]));
 
         $this->withoutMiddleware();
         $response->assertRedirect('login');
@@ -107,7 +107,7 @@ class [[model_uc]]ControllerTest extends TestCase
 //    public function prevent_non_logged_in_users_from_updateing_[[model_singular]]()
 //    {
 //        // Should check for permisson before checking to see if record exists
-//        $response = $this->put(route('[[model_singular]].edit', ['[[model_singular]]' => 1]));
+//        $response = $this->put(route('[[route_path]].edit', ['[[model_singular]]' => 1]));
 //        $this->withoutMiddleware();
 //        $response->assertRedirect('login');
 //    }
@@ -120,7 +120,7 @@ class [[model_uc]]ControllerTest extends TestCase
     {
 
         // Should check for permisson before checking to see if record exists
-        $response = $this->delete(route('[[model_singular]].destroy', ['[[model_singular]]' => 1]));
+        $response = $this->delete(route('[[route_path]].destroy', ['[[model_singular]]' => 1]));
 
         $this->withoutMiddleware();
         $response->assertRedirect('login');
@@ -141,11 +141,11 @@ class [[model_uc]]ControllerTest extends TestCase
         $user = $this->getRandomUser();
 
 
-        $response = $this->actingAs($user)->get('/[[model_singular]]');
+        $response = $this->actingAs($user)->get('/[[route_path]]');
 
         // TODO: Check for message???
 
-        $response->assertRedirect('[[model_singular]]');
+        $response->assertRedirect('[[route_path]]');
     }
 
     /**
@@ -156,7 +156,7 @@ class [[model_uc]]ControllerTest extends TestCase
 
         $user = $this->getRandomUser('cant');
 
-        $response = $this->actingAs($user)->get(route('[[model_singular]].create'));
+        $response = $this->actingAs($user)->get(route('[[route_path]].create'));
 
         $response->assertRedirect('[[model_singular]]');
     }
@@ -170,7 +170,7 @@ class [[model_uc]]ControllerTest extends TestCase
 
         $user = $this->getRandomUser('cant');
 
-        $response = $this->actingAs($user)->post(route('[[model_singular]].store'));
+        $response = $this->actingAs($user)->post(route('[[route_path]].store'));
 
         $response->assertStatus(403);  // Form Request::authorized() returns 403 when user is not authorized
 
@@ -185,9 +185,9 @@ class [[model_uc]]ControllerTest extends TestCase
         $user = $this->getRandomUser('cant');
 
         // Should check for permisson before checking to see if record exists
-        $response = $this->actingAs($user)->get(route('[[model_singular]].show', ['[[model_singular]]' => 1]));
+        $response = $this->actingAs($user)->get(route('[[route_path]].show', ['[[model_singular]]' => 1]));
 
-        $response->assertRedirect('[[model_singular]]');
+        $response->assertRedirect('[[route_path]]');
     }
 
     /**
@@ -198,9 +198,9 @@ class [[model_uc]]ControllerTest extends TestCase
 
         $user = $this->getRandomUser('cant');
 
-        $response = $this->actingAs($user)->get(route('[[model_singular]].edit', ['[[model_singular]]' => 1]));
+        $response = $this->actingAs($user)->get(route('[[route_path]].edit', ['[[model_singular]]' => 1]));
 
-        $response->assertRedirect('[[model_singular]]');
+        $response->assertRedirect('[[route_path]]');
     }
 
 
@@ -212,7 +212,7 @@ class [[model_uc]]ControllerTest extends TestCase
 
         $user = $this->getRandomUser('cant');
 
-        $response = $this->actingAs($user)->put(route('[[model_singular]].update', ['[[model_singular]]' => 1]));
+        $response = $this->actingAs($user)->put(route('[[route_path]].update', ['[[model_singular]]' => 1]));
 
         $response->assertStatus(403);  // Form Request::authorized() returns 403 when user is not authorized
 
@@ -228,9 +228,9 @@ class [[model_uc]]ControllerTest extends TestCase
         $user = $this->getRandomUser('cant');
 
         // Should check for permisson before checking to see if record exists
-        $response = $this->actingAs($user)->delete(route('[[model_singular]].destroy', ['[[model_singular]]' => 1]));
+        $response = $this->actingAs($user)->delete(route('[[route_path]].destroy', ['[[model_singular]]' => 1]));
 
-        $response->assertRedirect('[[model_singular]]');
+        $response->assertRedirect('[[route_path]]');
     }
 
     ////////////
@@ -249,9 +249,9 @@ class [[model_uc]]ControllerTest extends TestCase
 
         $user = $this->getRandomUser('TEST-INDEX-USER');
 
-        $response = $this->actingAs($user)->get(route('[[model_singular]].create'));
+        $response = $this->actingAs($user)->get(route('[[route_path]].create'));
 
-        $response->assertRedirect('[[model_singular]]');
+        $response->assertRedirect('[[route_path]]');
     }
 
 
@@ -263,7 +263,7 @@ class [[model_uc]]ControllerTest extends TestCase
 
         $user = $this->getRandomUser('TEST-INDEX-USER');
 
-        $response = $this->actingAs($user)->post(route('[[model_singular]].store'));
+        $response = $this->actingAs($user)->post(route('[[route_path]].store'));
 
         $response->assertStatus(403);  // Form Request::authorized() returns 403 when user is not authorized
 
@@ -278,9 +278,9 @@ class [[model_uc]]ControllerTest extends TestCase
         $user = $this->getRandomUser('TEST-INDEX-USER');
 
         // Should check for permisson before checking to see if record exists
-        $response = $this->actingAs($user)->get(route('[[model_singular]].show', ['[[model_singular]]' => 1]));
+        $response = $this->actingAs($user)->get(route('[[route_path]].show', ['[[model_singular]]' => 1]));
 
-        $response->assertRedirect('[[model_singular]]');
+        $response->assertRedirect('[[route_path]]');
     }
 
     /**
@@ -291,9 +291,9 @@ class [[model_uc]]ControllerTest extends TestCase
 
         $user = $this->getRandomUser('TEST-INDEX-USER');
 
-        $response = $this->actingAs($user)->get(route('[[model_singular]].edit', ['[[model_singular]]' => 1]));
+        $response = $this->actingAs($user)->get(route('[[route_path]].edit', ['[[model_singular]]' => 1]));
 
-        $response->assertRedirect('[[model_singular]]');
+        $response->assertRedirect('[[route_path]]');
     }
 
 
@@ -305,7 +305,7 @@ class [[model_uc]]ControllerTest extends TestCase
 
         $user = $this->getRandomUser('TEST-INDEX-USER');
 
-        $response = $this->actingAs($user)->put(route('[[model_singular]].update', ['[[model_singular]]' => 1]));
+        $response = $this->actingAs($user)->put(route('[[route_path]].update', ['[[model_singular]]' => 1]));
 
         $response->assertStatus(403);  // Form Request::authorized() returns 403 when user is not authorized
 
@@ -321,9 +321,9 @@ class [[model_uc]]ControllerTest extends TestCase
         $user = $this->getRandomUser('TEST-INDEX-USER');
 
         // Should check for permisson before checking to see if record exists
-        $response = $this->actingAs($user)->delete(route('[[model_singular]].destroy', ['[[model_singular]]' => 1]));
+        $response = $this->actingAs($user)->delete(route('[[route_path]].destroy', ['[[model_singular]]' => 1]));
 
-        $response->assertRedirect('[[model_singular]]');
+        $response->assertRedirect('[[route_path]]');
     }
 
     /// ////////
@@ -341,7 +341,7 @@ class [[model_uc]]ControllerTest extends TestCase
         $user = $this->getRandomUser('super-admin');
 
         // act as the user we got and request the create_new_article route
-        $response = $this->actingAs($user)->get(route('[[model_singular]].show', ['[[model_singular]]' => 100]));
+        $response = $this->actingAs($user)->get(route('[[route_path]].show', ['[[model_singular]]' => 100]));
 
         $response->assertSessionHas('flash_error_message', 'Unable to find [[display_name_plural]] to display.');
 
@@ -356,7 +356,7 @@ class [[model_uc]]ControllerTest extends TestCase
         $user = $this->getRandomUser('super-admin');
 
         // act as the user we got and request the create_new_article route
-        $response = $this->actingAs($user)->get(route('[[model_singular]].edit', ['[[model_singular]]' => 2]));
+        $response = $this->actingAs($user)->get(route('[[route_path]].edit', ['[[model_singular]]' => 2]));
 
         $response->assertSessionHas('flash_error_message', 'Unable to find [[display_name_plural]] to edit.');
 
@@ -372,11 +372,11 @@ class [[model_uc]]ControllerTest extends TestCase
         $user = $this->getRandomUser('super-admin');
 
         // act as the user we got and request the create_new_article route
-        $response = $this->actingAs($user)->get(route('[[model_singular]].create'));
+        $response = $this->actingAs($user)->get(route('[[route_path]].create'));
 
         $response->assertStatus(200);
-        $response->assertViewIs('[[model_singular]].create');
-        $response->assertSee('[[model_singular]]-form');
+        $response->assertViewIs('[[route_path]].create');
+        $response->assertSee('[[route_path]]-form');
 
     }
 
@@ -397,7 +397,7 @@ class [[model_uc]]ControllerTest extends TestCase
 
         $totalNumberOf[[display_name_plural]]Before = [[model_uc]]::count();
 
-        $response = $this->actingAs($user)->post(route('[[model_singular]].store'), $data);
+        $response = $this->actingAs($user)->post(route('[[route_path]].store'), $data);
 
         dd($response);
 
@@ -431,7 +431,7 @@ class [[model_uc]]ControllerTest extends TestCase
 
         $totalNumberOf[[display_name_plural]]Before = [[model_uc]]::count();
 
-        $response = $this->actingAs($user)->post(route('[[model_singular]].store'), $data);
+        $response = $this->actingAs($user)->post(route('[[route_path]].store'), $data);
 
         $totalNumberOf[[display_name_plural]]After = [[model_uc]]::count();
         $this->assertEquals($totalNumberOf[[display_name_plural]]After, $totalNumberOf[[display_name_plural]]Before, "the number of total article is supposed to be the same ");
@@ -471,7 +471,7 @@ class [[model_uc]]ControllerTest extends TestCase
 
         $totalNumberOf[[display_name_plural]]Before = [[model_uc]]::count();
 
-        $response = $this->actingAs($user)->post(route('[[model_singular]].store'), $data);
+        $response = $this->actingAs($user)->post(route('[[route_path]].store'), $data);
 
         $totalNumberOf[[display_name_plural]]After = [[model_uc]]::count();
 
@@ -522,7 +522,7 @@ class [[model_uc]]ControllerTest extends TestCase
 [[endforeach]]
         ];
 
-        $response = $this->actingAs($user)->post(route('[[model_singular]].store'), $data);
+        $response = $this->actingAs($user)->post(route('[[route_path]].store'), $data);
         $response->assertStatus(302);
 
         $errors = session('errors');
@@ -552,7 +552,7 @@ class [[model_uc]]ControllerTest extends TestCase
 
         $totalNumberOf[[display_name_plural]]Before = [[model_uc]]::count();
 
-        $response = $this->actingAs($user)->json('PATCH', '[[model_singular]]/' . $data['id'], $data);
+        $response = $this->actingAs($user)->json('PATCH', '[[route_path]]/' . $data['id'], $data);
 
         $response->assertStatus(200);
 
@@ -591,14 +591,14 @@ class [[model_uc]]ControllerTest extends TestCase
 [[endforeach]]
         ];
 
-        $response = $this->actingAs($user)->post(route('[[model_singular]].store'), $[[model_singular]]_dup);
+        $response = $this->actingAs($user)->post(route('[[route_path]].store'), $[[model_singular]]_dup);
 
 
         $data['name'] = $[[model_singular]]_dup['name'];
 
         $totalNumberOf[[display_name_plural]]Before = [[model_uc]]::count();
 
-        $response = $this->actingAs($user)->json('PATCH', '[[model_singular]]/' . $data['id'], $data);
+        $response = $this->actingAs($user)->json('PATCH', '[[route_path]]/' . $data['id'], $data);
         $response->assertStatus(422);  // From web page we get a 422
 
         $errors = session('errors');
@@ -636,7 +636,7 @@ class [[model_uc]]ControllerTest extends TestCase
 
         $totalNumberOf[[display_name_plural]]Before = [[model_uc]]::count();
 
-        $response = $this->actingAs($user)->json('DELETE', '[[model_singular]]/' . $data['id'], $data);
+        $response = $this->actingAs($user)->json('DELETE', '[[route_path]]/' . $data['id'], $data);
 
         $totalNumberOf[[display_name_plural]]After = [[model_uc]]::count();
         $this->assertEquals($totalNumberOf[[display_name_plural]]After, $totalNumberOf[[display_name_plural]]Before - 1, "the number of total [[model_singular]] should be the same ");

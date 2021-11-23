@@ -144,12 +144,12 @@
 
             <tr v-else v-for="row in this.gridData" :key="row.id">
                 <td data-title="Name">
-                    <a v-bind:href="'/[[model_singular]]/' + row.id"
+                    <a v-bind:href="'/[[route_path]]/' + row.id"
                        v-if="(permissions.can_show == '1')">
-                        {{ row.name }}
+                        {{ row.[[name_field]] }}
                     </a>
                     <span v-if="(permissions.can_show != '1')">
-                                        {{ row.name }}
+                                        {{ row.[[name_field]] }}
                         </span>
                 </td>
 [[foreach:grid_columns]]
@@ -158,14 +158,14 @@
     [[endif]]
 [[endforeach]]
                 <td data-title="Actions" class="text-lg-center text-nowrap">
-                    <a v-bind:href="'/[[model_singular]]/' + row.id + '/edit'"
+                    <a v-bind:href="'/[[route_path]]/' + row.id + '/edit'"
                        v-if="(permissions.can_edit)"
                        class="grid-action-item">
                         <svg role="img" :aria-labelledby="'edit-icon-'+row.id" xmlns="http://www.w3.org/2000/svg"
                              width="24" height="24"
                              fill="currentColor"
                              class="bi bi-pencil-square" viewBox="0 0 16 16">
-                            <title :id="'edit-icon-'+row.id">Edit {{ row.name }}</title>
+                            <title :id="'edit-icon-'+row.id">Edit {{ row.[[name_field]] }}</title>
                             <path
                                 d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                             <path fill-rule="evenodd"
@@ -180,10 +180,10 @@
 
     <!-- Grid Actions Bottom -->
     <div class="grid-bottom row mb-4 align-items-center">
-        <div class="col-lg-4 mb-2 mb-lg-0">
-            <a href="/[[model_singular]]/download" class="btn btn-outline-secondary mb-2 me-2">Export to
+        <div class="col-lg-4 mb-2 mb-lg-0 d-print-none">
+            <a href="/[[route_path]]/download" class="btn btn-outline-secondary mb-2 me-2">Export to
                 Excel</a>
-            <a href="/[[model_singular]]/print" class="btn btn-outline-secondary mb-2 me-2">Print PDF</a>
+            <a href="/[[route_path]]/print" class="btn btn-outline-secondary mb-2 me-2">Print PDF</a>
         </div>
         <ss-grid-pagination class="col-lg-4 mb-2"
                             v-bind:current_page="current_page"
@@ -205,7 +205,7 @@
 import SearchTag from "../Base/SearchTag";
 
 export default {
-    name: '[[model_singular]]-grid',
+    name: '[[route_path]]-grid',
     components: {SearchTag},
     props: {
         'filters': {
@@ -347,7 +347,7 @@ export default {
         },
 
         goToNew: function () {
-            window.location.href = '/[[model_singular]]/create';
+            window.location.href = '/[[route_path]]/create';
         },
 
         sortColumn: function (obj) {
@@ -408,7 +408,7 @@ export default {
                             Object.keys(error.response.data.errors).forEach(i => this.form_errors[i] = error.response.data.errors[i]);
                         } else if (error.response.status === 404) {  // Record not found
                             this.server_message = 'Record not found';
-                            window.location = '/[[model_singular]]';
+                            window.location = '/[[route_path]]';
                         } else if (error.response.status === 419) {  // Unknown status
                             this.server_message = 'Unknown Status, please try to ';
                             this.try_logging_in = true;
@@ -428,7 +428,7 @@ export default {
 
         getDataUrl: function (new_page_number) {
 
-            var url = 'api-[[model_singular]]?';
+            var url = 'api-[[route_path]]?';
             var queryParams = [];
 
             queryParams.push('page=' + new_page_number);
