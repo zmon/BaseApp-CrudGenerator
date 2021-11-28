@@ -28,10 +28,10 @@ From the bottom of the file put these at the top in alpha order
 
 ```
         Permission::findOrCreate('[[route_path]] index');
-        Permission::findOrCreate('[[route_path]] view');
-        Permission::findOrCreate('[[route_path]] export-pdf');
-        Permission::findOrCreate('[[route_path]] export-excel');
-        Permission::findOrCreate('[[route_path]] add');
+        Permission::findOrCreate('[[route_path]] show');
+        Permission::findOrCreate('[[route_path]] print');
+        Permission::findOrCreate('[[route_path]] export');
+        Permission::findOrCreate('[[route_path]] create');
         Permission::findOrCreate('[[route_path]] edit');
         Permission::findOrCreate('[[route_path]] delete');
 ```

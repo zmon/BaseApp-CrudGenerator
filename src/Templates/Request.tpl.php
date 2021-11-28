@@ -17,7 +17,7 @@ class [[model_uc]]Request extends FormRequest
         if ($this->route('[[route_path]]')) {  // If ID we must be changing an existing record
             return Auth::user()->can('[[route_path]] update');
         } else {  // If not we must be adding one
-            return Auth::user()->can('[[route_path]] add');
+            return Auth::user()->can('[[route_path]] create');
         }
     }
 
