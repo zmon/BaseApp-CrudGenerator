@@ -138,6 +138,9 @@ print_r($options);
         }
 
         $filegenerator->templateName = 'APIIndexRequest';
+        $filegenerator->path = app_path() . "/Http/Requests/$modelname/${modelname}ApiIndexRequest.php";
+        $filegenerator->Generate();
+        $filegenerator->templateName = 'IndexRequest';
         $filegenerator->path = app_path() . "/Http/Requests/$modelname/${modelname}IndexRequest.php";
         $filegenerator->Generate();
         $filegenerator->templateName = 'CreateRequest';
