@@ -21,7 +21,7 @@ CrudGenerator\CrudGeneratorServiceProvider::class,
 ### Upgrade
 
 ```
-COMPOSER_MEMORY_LIMIT=-1 composer update zmon/crud-generator-mysql @dev
+COMPOSER_MEMORY_LIMIT=-1 composer update zmon/base-app-crud-generator @dev
 ```
 
 
