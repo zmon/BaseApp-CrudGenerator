@@ -4,7 +4,7 @@ namespace App\Http\Requests\[[model_uc]];
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class [[model_uc]]HistoryRequest extends FormRequest
+class [[model_uc]]HistoryDifferenceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class [[model_uc]]HistoryRequest extends FormRequest
      */
     public function authorize()
     {
-        return request()->user()->can('[[route_path]] history');
+        return request()->user()->can('[[route_path]] history_difference');
     }
 
     // overwrite parent method to redirect unauthorized requests
