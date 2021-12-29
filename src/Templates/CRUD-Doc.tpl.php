@@ -34,6 +34,8 @@ From the bottom of the file put these at the top in alpha order
         Permission::findOrCreate('[[route_path]] create');
         Permission::findOrCreate('[[route_path]] edit');
         Permission::findOrCreate('[[route_path]] delete');
+        Permission::findOrCreate('[[route_path]] history');
+        Permission::findOrCreate('[[route_path]] history_difference');
 ```
 
 From the bottom of the file, add these to admin
@@ -52,6 +54,18 @@ Then run the following to install the permissions
 
 ```
 php artisan app:set-user-permissions
+```
+
+### Filter By Organization
+
+Clean up  App\Models\[[model_uc]]::buildBaseGridQuery()
+
+```
+$organization_id = \Auth::user()->organization_id;
+
+if ($organization_id) {
+$query->where('[[tablename]].organization_id', '=', $organization_id);
+}
 ```
 
 ### Components
@@ -105,9 +119,12 @@ Add
 
 ```
 @can(['[[route_path]] index'])
-<li class="nav-item @php if(isset($nav_path[0]) && $nav_path[0] == '[[route_path]]') echo 'active' @endphp">
-    <a class="nav-link" href="{{ route('[[route_path]].index') }}">[[display_name_plural]] <span
-            class="sr-only">(current)</span></a>
+<li class="nav-item">
+    <a class="nav-link @php if(isset($nav_path[0]) && $nav_path[0] == '[[route_path]]') echo 'active' @endphp"
+       href="{{ route('[[route_path]].index') }}">[[display_name_plural]]
+        @if(isset($nav_path[0]) && $nav_path[0] == '[[route_path]]') <span
+            class="visually-hidden">(current)</span> @endif
+    </a>
 </li>
 @endcan
 ```
@@ -115,9 +132,16 @@ Add
 ##### Sub Menu
 
 ```
+
 @can(['[[route_path]] index'])
-<a class="dropdown-item @php if(isset($nav_path[1]) && $nav_path[1] == '[[route_path]]') echo 'active' @endphp"
-   href="/[[route_path]]">[[display_name_plural]]</a>
+<li>
+    <a class="dropdown-item @php if(isset($nav_path[1]) && $nav_path[1] == '[[route_path]]') echo 'active' @endphp"
+       href="{{ route('[[route_path]].index') }}">
+        [[display_name_plural]]
+        @if(isset($nav_path[1]) && $nav_path[1] == '[[route_path]]') <span
+            class="visually-hidden">(current)</span> @endif
+    </a>
+</li>
 @endcan
 ```
 

@@ -13,6 +13,8 @@ use App\Http\Requests\[[model_uc]]\[[model_uc]]FormRequest;
 use App\Http\Requests\[[model_uc]]\[[model_uc]]IndexRequest;
 use App\Http\Requests\[[model_uc]]\[[model_uc]]PrintRequest;
 use App\Http\Requests\[[model_uc]]\[[model_uc]]ShowRequest;
+use App\Http\Requests\[[model_uc]]\[[model_uc]]HistoryRequest;
+use App\Http\Requests\[[model_uc]]\[[model_uc]]HistoryDifferenceRequest;
 use App\Http\Resources\[[model_uc]]HistoryResource;
 use App\Models\History;
 use App\Models\[[model_uc]];
@@ -145,7 +147,9 @@ class [[model_uc]]Controller extends Controller
         $relationship_data = $this->getRelationshipData($[[model_singular]]->id);
         $can_edit = $request->user()->can('[[route_path]] edit');
         $can_delete = ($request->user()->can('[[route_path]] delete') && $[[model_singular]]->canDelete());
-        return view('[[view_folder]].show', compact('[[model_singular]]', 'can_edit', 'can_delete', 'relationship_data'));
+        $can_history = ($request->user()->can('[[route_path]] history'));
+
+        return view('[[view_folder]].show', compact('[[model_singular]]', 'can_edit', 'can_delete', 'can_history', 'relationship_data'));
 
     }
 
@@ -221,7 +225,7 @@ class [[model_uc]]Controller extends Controller
      * @param integer $id
      * @return Response
      */
-    public function history([[model_uc]]ShowRequest $request, [[model_uc]] $[[model_singular]]): View // make [[model_uc]]ShowRequest to check permissions and redirect
+    public function history([[model_uc]]HistoryRequest $request, [[model_uc]] $[[model_singular]]): View // make [[model_uc]]ShowRequest to check permissions and redirect
     {
 
         $[[model_singular]]->load(['histories' => function ($q) {
@@ -232,8 +236,9 @@ class [[model_uc]]Controller extends Controller
                 return [[model_uc]]::formattedHistoryComparison($h);
             })
         );
+        $can_history_difference = ($request->user()->can('[[route_path]] history_difference'));
 
-        return view('[[view_folder]].history', compact('[[model_singular]]', 'histories'));
+        return view('[[view_folder]].history', compact('[[model_singular]]', 'histories', 'can_history_difference'));
 
     }
 
@@ -243,7 +248,7 @@ class [[model_uc]]Controller extends Controller
      * @param integer $id
      * @return Response
      */
-    public function historyDifference([[model_uc]]ShowRequest $request, [[model_uc]] $[[model_singular]], History $history): View // make [[model_uc]]ShowRequest to check permissions and redirect
+    public function historyDifference([[model_uc]]HistoryDifferenceRequest $request, [[model_uc]] $[[model_singular]], History $history): View // make [[model_uc]]ShowRequest to check permissions and redirect
     {
 
         $history->load('user');

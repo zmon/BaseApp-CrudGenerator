@@ -22,7 +22,9 @@
                     @endif
                 </div>
                 <div class="col-md-4 text-md-center mt-2 mt-md-0">
+                    @if ($can_history)
                     <a href="/[[route_path]]/{{  $[[model_singular]]->id }}/history" class="btn btn-primary">Show History</a>
+                    @endif
                 </div>
                 <div class="col-md-4 text-md-end mt-2 mt-md-0">
                     @if ($can_delete)

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\[[model_uc]];
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\[[model_uc]]\[[model_uc]]IndexRequest;
+use App\Http\Requests\[[model_uc]]\[[model_uc]]ApiIndexRequest;
 use App\Models\[[model_uc]];
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
@@ -16,7 +16,7 @@ class [[model_uc]]Api extends Controller
      *
      * @return Response
      */
-    public function index([[model_uc]]IndexRequest $request)
+    public function index([[model_uc]]ApiIndexRequest $request)
     {
 
         $filters = Controller::getIndexFiltersFromRequestAndRemember(

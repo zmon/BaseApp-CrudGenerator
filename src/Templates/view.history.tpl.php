@@ -9,7 +9,7 @@
 
 @section('content')
     <histories-grid
-        :histories='@json($histories)'
+        :histories='@json($histories)' :can_history_difference="{{$can_history_difference}}"
     >
         <std-page-header header="History for {{$[[model_singular]]->[[name_field]]}}" cancel-url="/[[route_path]]/{{$[[model_singular]]->id}}">
         </std-page-header>

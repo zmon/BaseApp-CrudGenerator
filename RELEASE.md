@@ -14,3 +14,4 @@
                     Added AhouldAutoSize to export template
                     Fixed print template variables
 
+1.4.4.0 2021-21-29  Added suport for History, add debounceKeywordGetData back in, fix DOC files for crud

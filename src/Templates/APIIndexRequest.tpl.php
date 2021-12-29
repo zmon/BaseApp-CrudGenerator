@@ -4,7 +4,7 @@ namespace App\Http\Requests\[[model_uc]];
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class [[model_uc]]APIIndexRequest extends FormRequest
+class [[model_uc]]ApiIndexRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

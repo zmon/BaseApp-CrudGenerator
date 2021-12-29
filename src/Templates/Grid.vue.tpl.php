@@ -21,6 +21,7 @@
                     <input type="text" class="form-control" placeholder="Search by Name"
                            aria-label="Search by Name"
                            v-model="keyword"
+                           @keyup="debounceKeywordGetData()"
                            style="z-index:20;">
                     <div class="input-group-append position-relative" style="z-index:20;">
                         <span class="input-group-text p-0">
@@ -71,7 +72,7 @@
                     v-on:selectedSort="sortColumn"
                     v-bind:selectedKey="sort_column"
                     title="Sort by [[i.display]]"
-                    style="width:20%;"
+                    style="width:auto;"
                     :params="{
                             sortField: '[[i.name]]',
                             InitialSortOrder: (filters.sort_column == '[[i.name]]' ? filters.sort_direction : 'asc'),
@@ -153,6 +154,7 @@
                             v-bind:current_page="current_page"
                             v-bind:last_page="last_page"
                             v-bind:total="total"
+                            :page_links="page_links"
                             v-on:goto-page="getData">
         </ss-grid-pagination>
         <ss-grid-pagination-location class="col-lg-4 text-lg-right mb-2"
@@ -202,6 +204,7 @@ export default {
             current_page: 1,
             last_page: null,
             total: null,
+            page_links: [],
 
             sort_direction: this.filters.sort_direction,
             sort_column: this.filters.sort_column,
@@ -277,6 +280,7 @@ export default {
                             this.total = response.data.total;
                             this.current_page = response.data.current_page;
                             this.last_page = (response.data.last_page || 1);
+                            this.page_links = response.data.links
                         } else {
                             this.server_message = res.status;
                         }

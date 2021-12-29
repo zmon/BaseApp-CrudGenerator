@@ -19,8 +19,8 @@ class [[model_uc]]HistoryRequest extends FormRequest
     // overwrite parent method to redirect unauthorized requests
     protected function failedAuthorization()
     {
-        session()->flash('flash_error_message', "Unauthorized");
-        abort(redirect('/home'));
+        session()->flash('flash_error_message', "You are not authorized to view an [[model_uc]]'s history.");
+        abort(redirect()->route('[[route_path]].index'));
     }
 
     /**

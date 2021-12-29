@@ -128,6 +128,12 @@ class [[model_uc]] extends Model
             $query->where('[[tablename]].active', $active);
         }
 
+//        $organization_id = \Auth::user()->organization_id;
+//
+//        if ($organization_id) {
+//            $query->where('[[tablename]].organization_id', '=', $organization_id);
+//        }
+
 
         return $query;
     }
