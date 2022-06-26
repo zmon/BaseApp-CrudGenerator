@@ -93,8 +93,6 @@ class CrudGeneratorService
         $options['first_column_nonid'] = count($columns) > 1 ? $columns[1]['name'] : '';
         $options['num_columns'] = count($columns);
 
-        // dump($options);
-
         //###############################################################################
         if (!is_dir(base_path() . '/resources/views/' . $this->viewFolderName)) {
             $this->output->info('Creating directory: ' . base_path() . '/resources/views/' . $this->viewFolderName);
@@ -388,6 +386,9 @@ print_r($options);
                 $cols = DB::select("show columns from " . $tablename);
                 break;
         }
+        $connection = config('database.default');
+
+        $driver = config("database.connections.{$connection}.driver");
 
         $ret = [];
         foreach ($cols as $c) {
@@ -396,8 +397,14 @@ print_r($options);
             $field = isset($c->Field) ? $c->Field : $c->field;
             $type = isset($c->Type) ? $c->Type : $c->type;
             $null = isset($c->Null) ? $c->Null : $c->null;
-            $key = isset($c->Key) ? $c->Key : $c->key;
-            $default = $c->Default;
+            if ($driver == 'pgsql') {
+                $key = isset($c->Key) ? $c->Key : isset($c->key) ? $c->key : '';
+                $default = isset($c->Default) ? $c->Default : isset($c->default) ? $c->default : '';
+            } else {
+                $key = isset($c->Key) ? $c->Key : $c->key;
+                $default = $c->Default;
+            }
+
 
 
 
