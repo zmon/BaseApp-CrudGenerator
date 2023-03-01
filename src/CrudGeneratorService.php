@@ -398,8 +398,8 @@ print_r($options);
             $type = isset($c->Type) ? $c->Type : $c->type;
             $null = isset($c->Null) ? $c->Null : $c->null;
             if ($driver == 'pgsql') {
-                $key = isset($c->Key) ? $c->Key : isset($c->key) ? $c->key : '';
-                $default = isset($c->Default) ? $c->Default : isset($c->default) ? $c->default : '';
+                $key = $c->Key ?? $c->key ?? '';
+                $default = $c->Default ?? $c->default ?? '';
             } else {
                 $key = isset($c->Key) ? $c->Key : $c->key;
                 $default = $c->Default;
