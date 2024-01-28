@@ -398,8 +398,8 @@ print_r($options);
             $type = isset($c->Type) ? $c->Type : $c->type;
             $null = isset($c->Null) ? $c->Null : $c->null;
             if ($driver == 'pgsql') {
-                $key = isset($c->Key) ? $c->Key : isset($c->key) ? $c->key : '';
-                $default = isset($c->Default) ? $c->Default : isset($c->default) ? $c->default : '';
+                $key = isset($c->Key) ? $c->Key : (isset($c->key) ? $c->key : '');
+                $default = isset($c->Default) ? $c->Default : (isset($c->default) ? $c->default : '');
             } else {
                 $key = isset($c->Key) ? $c->Key : $c->key;
                 $default = $c->Default;
@@ -455,6 +455,9 @@ print_r($options);
                         case 'number':
                             $validation = "nullable|numeric";
                             break;
+                        case 'boolean':
+                            $validation = "nullable|numeric|boolean";
+                            break;
                         case 'date':
                             $validation = "nullable|date";
                             if ($size) $validation .= "|max:$size";
@@ -491,6 +494,9 @@ print_r($options);
         }
         if (Str::contains($dbtype, 'date')) {
             return 'date';
+        }
+        if (Str::contains($dbtype, 'boolean')) {
+            return 'boolean';
         }
         return 'unknown';
     }
